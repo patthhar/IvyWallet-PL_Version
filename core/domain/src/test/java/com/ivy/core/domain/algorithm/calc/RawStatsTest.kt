@@ -4,45 +4,59 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.ivy.core.persistence.algorithm.calc.CalcTrn
 import com.ivy.data.transaction.TransactionType
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
 internal class RawStatsTest {
+    private val fiveSecondsAgo = Instant.now().minusSeconds(5)
+    private val tenSecondsAgo = Instant.now().minusSeconds(10)
+    private val thirtySecondsAgo = Instant.now().minusSeconds(30)
 
     @Test
-    fun `Test creating raw stats from transactions`() {
-        val tenSecondsAgo = Instant.now().minusSeconds(10)
-        val fiveSecondsAgo = Instant.now().minusSeconds(5)
-        val threeSecondsAgo = Instant.now().minusSeconds(5)
+    fun `Raw Stats for different CalcTrns`() {
         val stats = rawStats(
             listOf(
                 CalcTrn(
-                    amount = 5.0,
-                    currency = "EUR",
-                    type = TransactionType.Income,
-                    time = tenSecondsAgo
-                ),
-                CalcTrn(
-                    amount = 3.0,
-                    currency = "USD",
+                    amount = 50.0,
+                    currency = "INR",
                     type = TransactionType.Expense,
-                    time = threeSecondsAgo
+                    time = fiveSecondsAgo
                 ),
                 CalcTrn(
-                    amount = 10.0,
+                    amount = 100.0,
                     currency = "USD",
                     type = TransactionType.Expense,
                     time = fiveSecondsAgo
                 ),
+                CalcTrn(
+                    amount = 100.0,
+                    currency = "INR",
+                    type = TransactionType.Expense,
+                    time = tenSecondsAgo
+                ),
+                CalcTrn(
+                    amount = 500.0,
+                    currency = "USD",
+                    type = TransactionType.Income,
+                    time = thirtySecondsAgo
+                ),
+                CalcTrn(
+                    amount = 50.0,
+                    currency = "INR",
+                    type = TransactionType.Income,
+                    time = tenSecondsAgo
+                ),
             )
         )
 
-        assertThat(stats.expensesCount).isEqualTo(2)
-        assertThat(stats.newestTrnTime).isEqualTo(threeSecondsAgo)
-        assertThat(stats.expenses).isEqualTo(mapOf("USD" to 13.0))
+        assertThat(stats.expensesCount).isEqualTo(3)
+        assertThat(stats.incomesCount).isEqualTo(2)
 
-        assertThat(stats.incomesCount).isEqualTo(1)
-        assertThat(stats.incomes).isEqualTo(mapOf("EUR" to 5.0))
+        assertThat(stats.newestTrnTime).isEqualTo(fiveSecondsAgo)
+        assertThat(stats.expenses).isEqualTo(mapOf("USD" to  100.0))
+        assertThat(stats.expenses).isEqualTo(mapOf("INR" to  150.0))
+
+        assertThat(stats.incomes).isEqualTo(mapOf("INR" to 50.0))
+        assertThat(stats.incomes).isEqualTo(mapOf("USD" to 500.0))
     }
 }

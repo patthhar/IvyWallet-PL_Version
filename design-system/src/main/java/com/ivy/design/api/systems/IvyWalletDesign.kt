@@ -41,7 +41,6 @@ private val b1 = 20.sp
 private val b2 = 16.sp
 private val c = 12.sp
 
-
 private fun typography(): IvyTypography {
     val raleWay = FontFamily(
         Font(R.font.raleway_regular, FontWeight.Normal),

@@ -294,7 +294,7 @@ class RootActivity : AppCompatActivity(), RootScreen {
         startActivity(share)
     }
 
-    fun openIvyWalletGooglePlayPage() {
+    private fun openIvyWalletGooglePlayPage() {
         openGooglePlayAppPage(appId = Constants.IVY_WALLET_APP_ID)
     }
 

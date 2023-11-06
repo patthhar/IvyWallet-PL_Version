@@ -41,8 +41,7 @@ private fun dummyRootScreen(): RootScreen = object : RootScreen {
         maxDate: LocalDate?,
         initialDate: LocalDate?,
         onDatePicked: (LocalDate) -> Unit
-    ) {
-    }
+    ) {}
 
     override fun timePicker(onTimePicked: (LocalTime) -> Unit) {}
 }
